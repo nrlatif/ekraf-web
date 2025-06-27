@@ -43,7 +43,8 @@ class ArtikelResource extends Resource
                 ->columnSpanFull(),
                 Forms\Components\RichEditor::make('content')
                 ->required()
-                ->columnSpanFull()
+                ->columnSpanFull(),
+                Forms\Components\Toggle::make('is_featured')
 
             ]);
     }
@@ -57,6 +58,7 @@ class ArtikelResource extends Resource
                 Tables\Columns\TextColumn::make('title'),
                 Tables\Columns\TextColumn::make('slug'),
                 Tables\Columns\ImageColumn::make('thumbnail'),
+                Tables\Columns\ToggleColumn::make('is_featured')
 
             ])
             ->filters([

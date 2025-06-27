@@ -12,7 +12,8 @@ class Artikel extends Model
         'title',
         'slug',
         'thumbnail',
-        'content'
+        'content',
+        'is_featured'
     ];
     public function author(){
         return $this->belongsTo(Author::class);
