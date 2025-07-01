@@ -6,9 +6,9 @@
         <div class="bg-black bg-opacity-50 w-full h-full absolute top-0 left-0"></div>
         <div class="relative z-10 text-white text-left px-6 md:px-12">
             <p class="mt-2 text-base md:text-lg">
-                <a href="/" class="hover:underline">Home</a> > 
+                <a href="/" class="hover:underline">Home</a> > Artikel
             </p>
-            <h1 class="text-3xl md:text-5xl font-bold">HOME</h1>
+            <h1 class="text-3xl md:text-5xl font-bold">ARTIKEL</h1>
         </div>
     </div>
     <!-- Swiper Slider -->

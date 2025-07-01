@@ -23,6 +23,9 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->brandName('EKRAF KUNINGAN')
+            ->brandLogo(asset('assets/img/LogoEkraf.png'))
+            ->brandLogoHeight('80px') 
             ->default()
             ->id('admin')
             ->path('admin')
