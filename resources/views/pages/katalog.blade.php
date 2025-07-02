@@ -88,4 +88,5 @@
             {{ $katalogs->onEachSide(1)->links() }}
         </div>
     </div>
+    {{-- Yuk beres  yuk--}}
 @endsection
