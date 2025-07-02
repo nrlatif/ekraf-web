@@ -24,23 +24,22 @@
 
                 <a href="{{ route('katalog', ['sort' => 'termurah', 'subsektor' => request('subsektor')]) }}"
                     class="flex items-center px-4 py-1 border rounded-full text-sm hover:bg-orange-500 hover:text-white 
-        {{ request('sort') == 'termurah' ? 'bg-orange-400 text-white' : 'bg-gray-100 text-gray-700' }}">
+                {{ request('sort') == 'termurah' ? 'bg-orange-400 text-white' : 'bg-gray-100 text-gray-700' }}">
                     <i class="fas fa-sort-amount-down-alt mr-2"></i> Termurah
                 </a>
 
                 <a href="{{ route('katalog', ['sort' => 'terbaru', 'subsektor' => request('subsektor')]) }}"
                     class="flex items-center px-4 py-1 border rounded-full text-sm hover:bg-orange-500 hover:text-white 
-        {{ request('sort') == 'terbaru' ? 'bg-orange-400 text-white' : 'bg-gray-100 text-gray-700' }}">
+                {{ request('sort') == 'terbaru' ? 'bg-orange-400 text-white' : 'bg-gray-100 text-gray-700' }}">
                     <i class="fas fa-clock mr-2"></i> Terbaru
                 </a>
 
                 <a href="{{ route('katalog', ['sort' => 'termahal', 'subsektor' => request('subsektor')]) }}"
                     class="flex items-center px-4 py-1 border rounded-full text-sm hover:bg-orange-500 hover:text-white 
-        {{ request('sort') == 'termahal' ? 'bg-orange-400 text-white' : 'bg-gray-100 text-gray-700' }}">
+                {{ request('sort') == 'termahal' ? 'bg-orange-400 text-white' : 'bg-gray-100 text-gray-700' }}">
                     <i class="fas fa-sort-amount-up mr-2"></i> Termahal
                 </a>
             </div>
-
 
             <form method="GET" class="flex items-center space-x-2">
                 <select name="subsektor" onchange="this.form.submit()" class="border-gray-300 rounded px-4 py-2 text-sm">
@@ -57,31 +56,36 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             @forelse($katalogs as $katalog)
-                <div
-                    class="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition transform hover:scale-105 duration-300">
-                    <img src="{{ asset('storage/' . $katalog->produk) }}" alt="{{ $katalog->title }}"
-                        class="w-full h-40 object-cover">
-
-                    <div class="p-4">
-                        <h3 class="text-base font-bold text-orange-600 mb-1">{{ $katalog->title }}</h3>
-                        <p class="text-xs text-gray-500 mb-2">
-                            {{ $katalog->harga ? 'Rp ' . number_format($katalog->harga, 0, ',', '.') : '' }}</p>
-                        <p class="text-xs text-gray-600 mb-3">Produk yang dijual UMKM Itu</p>
-
-                        <span class="inline-block bg-gray-100 text-[10px] px-2 py-1 rounded-full">
-                            {{ $katalog->subSektor->title ?? '-' }}
-                        </span>
+                <a href="{{ route('katalog.show', $katalog->slug) }}">
+                    <div
+                        class="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition transform hover:scale-105 duration-300">
+                        <img src="{{ asset('storage/' . $katalog->produk) }}" alt="{{ $katalog->title }}"
+                            class="w-full h-40 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-base font-bold text-orange-600 mb-1">{{ $katalog->title }}</h3>
+                            <p class="text-xs text-gray-500 mb-2">
+                                {{ $katalog->harga ? 'Rp ' . number_format($katalog->harga, 0, ',', '.') : '' }}</p>
+                            <p class="text-xs text-gray-600 mb-3">Produk yang dijual UMKM Itu</p>
+                            <span class="inline-block bg-gray-100 text-[10px] px-2 py-1 rounded-full">
+                                {{ $katalog->subSektor->title ?? '-' }}
+                            </span>
+                        </div>
                     </div>
-                </div>
+                </a>
+
             @empty
                 <div class="col-span-3 text-center text-gray-500">Data katalog tidak ditemukan.</div>
             @endforelse
         </div>
 
+        {{-- Info kecil --}}
+        <div class="text-center text-xs text-gray-600 mt-6">
+            Menampilkan {{ $katalogs->count() }} dari total {{ $katalogs->total() }} produk
+        </div>
 
-
-        <div class="mt-8">
-            {{ $katalogs->links() }}
+        {{-- Numbered pagination --}}
+        <div class="mt-4 flex justify-center">
+            {{ $katalogs->onEachSide(1)->links() }}
         </div>
     </div>
 @endsection

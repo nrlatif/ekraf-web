@@ -45,10 +45,6 @@
                 <p>Berita Unggulan</p>
                 <p>Untuk Kamu</p>
             </div>
-            <a href="semuaberita.html"
-                class="bg-primary px-5 py-2 rounded-full text-white font-semibold mt-4 md:mt-0 h-fit">
-                Lihat Semua
-            </a>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

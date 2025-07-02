@@ -50,6 +50,7 @@ class KatalogResource extends Resource
 
                 Forms\Components\TextInput::make('no_hp')
                     ->label('No. HP')
+                    ->prefix('+62')
                     ->tel(),
 
                 Forms\Components\TextInput::make('instagram')

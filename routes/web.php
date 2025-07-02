@@ -7,8 +7,12 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KontakController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\KatalogController;
 
-Route::get('/katalog', [\App\Http\Controllers\KatalogController::class, 'index'])->name('katalog');
+Route::get('/katalog/{slug}', [KatalogController::class, 'show'])->name('katalog.show');
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::get('/katalog/{subsektor}', [KatalogController::class, 'bySubsektor'])->name('katalog.subsektor');
+Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog');
 Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
 Route::get('/artikel', [BeritaController::class, 'index'])->name('artikel');
 Route::get('/', [LandingController::class,'index'])->name('landing');

@@ -23,7 +23,8 @@
             <a href="{{ url('/katalog') }}" class="text-green-900 hover:underline">KATALOG</a>
             <a href="{{ url('/artikel') }}" class="text-green-900 hover:underline">ARTIKEL</a>
             <a href="{{ url('/kontak') }}" class="text-green-900 hover:underline">KONTAK</a>
-            <a href="{{ url('/login') }}" class="text-green-900 hover:underline text-right leading-tight">DAFTAR<br />/ LOGIN</a>
+            <a href="{{ url('/login') }}" class="text-green-900 hover:underline text-right leading-tight">DAFTAR </a>
+            <a href="{{ url('/login') }}" class="text-green-900 hover:underline text-right leading-tight">LOGIN</a>
         </div>
 
         <!-- Tombol menu (mode mobile) -->

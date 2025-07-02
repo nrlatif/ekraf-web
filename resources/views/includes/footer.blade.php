@@ -10,7 +10,7 @@
                 class="bg-white text-[#1E293B] font-semibold px-6 py-3 rounded hover:bg-gray-200 flex items-center gap-2">
                 <i class="fas fa-user-plus"></i> Daftar Sekarang
             </a>
-            <a href="#"
+            <a href="/"
                 class="border border-white px-6 py-3 rounded hover:bg-white hover:text-[#1E293B] flex items-center gap-2">
                 <i class="fas fa-info-circle"></i> Pelajari Manfaat
             </a>
@@ -71,6 +71,6 @@
         </div>
     </div>
     <div class="border-t border-gray-700 text-center py-4 text-gray-500 text-sm">
-        © 2025 KUNINGAN KREATIF GALERY . All rights reserved.
+        © 2025 KUNINGAN KREATIF GALERI (Fachrul, Nurlatif) . All rights reserved.
     </div>
 </footer>

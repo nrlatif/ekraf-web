@@ -34,4 +34,21 @@ class KatalogController extends Controller
 
         return view('pages.katalog', compact('subsektors', 'katalogs'));
     }
+    public function bySubsektor($slug)
+    {
+        $subsektors = SubSektor::all();
+        $selectedSubsektor = SubSektor::where('slug', $slug)->firstOrFail();
+        $katalogs = Katalog::where('sub_sektor_id', $selectedSubsektor->id)
+            ->latest()
+            ->paginate(6)
+            ->withQueryString();
+
+        return view('pages.katalog', compact('subsektors', 'katalogs', 'selectedSubsektor'));
+    }
+    public function show($slug)
+    {
+        $katalog = Katalog::where('slug', $slug)->firstOrFail();
+        $others = Katalog::where('id', '!=', $katalog->id)->latest()->take(6)->get();
+        return view('pages.katalog.show', compact('katalog', 'others'));
+    }
 }
