@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Banner extends Model
 {
     protected $fillable = [
-        'artikel_id'
+        'title',
+        'image',
+        'artikel_id',
+        'link_url',
+        'is_active',
+        'sort_order'
     ];
 
     public function artikel(){

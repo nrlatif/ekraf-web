@@ -65,16 +65,38 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-8">
                 @foreach ($katalogs as $kat)
-                    <div class="bg-white rounded-lg shadow-sm hover:shadow-md border transition">
-                        <img src="{{ asset('storage/' . $kat->produk) }}" alt="{{ $kat->title }}"
-                            class="h-48 w-full object-cover rounded-t-lg">
-                        <div class="p-4 text-left">
-                            <h3 class="text-sm font-bold text-orange-500 mb-1">{{ $kat->title }}</h3>
-                            <p class="text-xs text-gray-500 mb-3">Produk yang dijual di UMKM itu</p>
-                            <button
-                                class="px-4 py-1 text-xs bg-gray-100 rounded-full">{{ $kat->subsektor->title ?? 'Sub Sektor' }}</button>
+                    <a href="{{ route('katalog.show', $kat->slug) }}" class="block transform hover:scale-105 transition duration-300">
+                        <div class="bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-100 overflow-hidden">
+                            @if($kat->image && file_exists(public_path('storage/' . $kat->image)))
+                                <img src="{{ asset('storage/' . $kat->image) }}" alt="{{ $kat->title }}"
+                                    class="h-48 w-full object-cover">
+                            @else
+                                <div class="h-48 w-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                                    <div class="text-center text-gray-400">
+                                        <i class="fas fa-image text-3xl mb-2"></i>
+                                        <p class="text-sm">No Image</p>
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="p-4 text-left">
+                                <h3 class="text-base font-bold text-orange-600 mb-2 line-clamp-2">{{ $kat->title }}</h3>
+                                <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+                                    {{ Str::limit(strip_tags($kat->content), 80) ?: 'Koleksi produk kreatif dari pelaku UMKM lokal' }}
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <span class="inline-block px-3 py-1 text-xs bg-orange-100 text-orange-700 rounded-full font-medium">
+                                        {{ $kat->subSektor->title ?? 'Sub Sektor' }}
+                                    </span>
+                                    @if($kat->products->count() > 0)
+                                        <span class="text-xs text-gray-500">
+                                            <i class="fas fa-box text-[10px] mr-1"></i>
+                                            {{ $kat->products->count() }} produk
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
 

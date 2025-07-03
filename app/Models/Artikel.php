@@ -7,24 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 class Artikel extends Model
 {
     protected $fillable = [
-        'author_id',
-        'artikel_kategori_id',
         'title',
         'slug',
         'thumbnail',
         'content',
-        'is_featured'
+        'is_featured',
+        'author_id',
+        'artikel_kategori_id'
     ];
-    public function author(){
+
+    public function author()
+    {
         return $this->belongsTo(Author::class);
     }
-    public function artikelkategori()
+
+    public function artikelKategori()
     {
-    return $this->belongsTo(ArtikelKategori::class, 'artikel_kategori_id');
+        return $this->belongsTo(ArtikelKategori::class, 'artikel_kategori_id');
     }
 
-    public function banner(){
+    public function banner()
+    {
         return $this->hasOne(Banner::class);
     }
-    
 }

@@ -59,13 +59,20 @@
                 <a href="{{ route('katalog.show', $katalog->slug) }}">
                     <div
                         class="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition transform hover:scale-105 duration-300">
-                        <img src="{{ asset('storage/' . $katalog->produk) }}" alt="{{ $katalog->title }}"
-                            class="w-full h-40 object-cover">
+                        @if($katalog->image && file_exists(public_path('storage/' . $katalog->image)))
+                            <img src="{{ asset('storage/' . $katalog->image) }}" alt="{{ $katalog->title }}"
+                                class="w-full h-40 object-cover">
+                        @else
+                            <div class="w-full h-40 bg-gray-200 flex items-center justify-center">
+                                <div class="text-center text-gray-400">
+                                    <i class="fas fa-image text-2xl mb-1"></i>
+                                    <p class="text-xs">No Image</p>
+                                </div>
+                            </div>
+                        @endif
                         <div class="p-4">
                             <h3 class="text-base font-bold text-orange-600 mb-1">{{ $katalog->title }}</h3>
-                            <p class="text-xs text-gray-500 mb-2">
-                                {{ $katalog->harga ? 'Rp ' . number_format($katalog->harga, 0, ',', '.') : '' }}</p>
-                            <p class="text-xs text-gray-600 mb-3">Produk yang dijual UMKM Itu</p>
+                            <p class="text-xs text-gray-600 mb-3">{{ Str::limit(strip_tags($katalog->content), 80) }}</p>
                             <span class="inline-block bg-gray-100 text-[10px] px-2 py-1 rounded-full">
                                 {{ $katalog->subSektor->title ?? '-' }}
                             </span>
