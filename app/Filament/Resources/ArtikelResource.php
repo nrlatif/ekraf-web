@@ -50,7 +50,8 @@ class ArtikelResource extends Resource
                     ->imageResizeTargetWidth('800')
                     ->imageResizeTargetHeight('450')
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->helperText('Upload thumbnail untuk artikel. Ukuran ideal: 800x450px'),
                 Forms\Components\RichEditor::make('content')
                 ->required()
                 ->columnSpanFull(),
@@ -77,9 +78,16 @@ class ArtikelResource extends Resource
                 Tables\Columns\TextColumn::make('artikelkategori.title')
                     ->label('Category')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('banners_count')
+                    ->label('Banners')
+                    ->counts('banners')
+                    ->suffix(' banner(s)')
+                    ->color('success')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
-                    ->limit(25),
+                    ->limit(25)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ToggleColumn::make('is_featured')
                     ->label('Featured')
             ])

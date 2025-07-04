@@ -32,6 +32,8 @@
             overflow: hidden;
         }
     </style>
+    
+    @stack('styles')
   </head>
   <body class="font-sans antialiased">
     <div class="min-h-screen bg-neutral-50">
@@ -74,5 +76,7 @@
         }
       });
     </script>
+    
+    @stack('scripts')
   </body>
 </html>

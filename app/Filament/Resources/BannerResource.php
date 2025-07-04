@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BannerResource\Pages;
 use App\Filament\Resources\BannerResource\RelationManagers;
 use App\Models\Banner;
+use App\Models\Artikel;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -26,7 +27,23 @@ class BannerResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->label('Banner Title')
                     ->required()
-                    ->maxLength(100),
+                    ->maxLength(100)
+                    ->helperText('Title yang akan ditampilkan pada banner'),
+                    
+                Forms\Components\Textarea::make('description')
+                    ->label('Description')
+                    ->maxLength(255)
+                    ->helperText('Deskripsi singkat banner (opsional)')
+                    ->nullable(),
+
+                Forms\Components\Select::make('artikel_id')
+                    ->label('Artikel Terkait')
+                    ->relationship('artikel', 'title')
+                    ->searchable()
+                    ->preload()
+                    ->nullable()
+                    ->placeholder('Pilih artikel untuk ditampilkan di banner')
+                    ->helperText('Artikel yang akan ditampilkan ketika banner diklik'),
                     
                 Forms\Components\FileUpload::make('image')
                     ->label('Banner Image')
@@ -34,37 +51,37 @@ class BannerResource extends Resource
                     ->directory('banners')
                     ->disk('public')
                     ->visibility('public')
-                    ->maxSize(2048) // 2MB
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(5120) // 5MB
+                    ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('16:9')
                     ->imageResizeTargetWidth('1200')
                     ->imageResizeTargetHeight('675')
                     ->required()
-                    ->columnSpanFull(),
-                    
-                Forms\Components\Select::make('artikel_id')
-                    ->relationship('artikel', 'title')
-                    ->searchable()
-                    ->preload()
-                    ->nullable()
-                    ->label('Related Article (Optional)'),
+                    ->columnSpanFull()
+                    ->helperText('Upload gambar banner untuk slider. Ukuran ideal: 1200x675px (16:9). Max 5MB')
+                    ->uploadingMessage('Uploading banner image...')
+                    ->downloadable()
+                    ->openable()
+                    ->previewable(),
                     
                 Forms\Components\TextInput::make('link_url')
-                    ->label('External Link URL')
+                    ->label('Link URL')
                     ->url()
                     ->nullable()
-                    ->placeholder('https://example.com'),
+                    ->placeholder('https://example.com')
+                    ->helperText('URL tujuan ketika banner diklik (opsional)'),
                     
                 Forms\Components\Toggle::make('is_active')
                     ->label('Active')
-                    ->default(true),
+                    ->default(true)
+                    ->helperText('Aktifkan banner untuk ditampilkan'),
                     
                 Forms\Components\TextInput::make('sort_order')
                     ->label('Sort Order')
                     ->numeric()
                     ->default(0)
-                    ->helperText('Lower numbers appear first')
+                    ->helperText('Urutan tampilan banner (angka kecil tampil duluan)')
             ]);
     }
 
@@ -75,30 +92,47 @@ class BannerResource extends Resource
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Banner Image')
                     ->square()
-                    ->size(60),
+                    ->size(80),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Title')
                     ->searchable()
                     ->sortable()
                     ->limit(30),
                 Tables\Columns\TextColumn::make('artikel.title')
-                    ->label('Related Article')
+                    ->label('Artikel Terkait')
                     ->searchable()
-                    ->limit(25),
+                    ->sortable()
+                    ->limit(25)
+                    ->placeholder('Tidak ada artikel'),
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Description')
+                    ->limit(40)
+                    ->placeholder('No description')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('link_url')
-                    ->label('External Link')
+                    ->label('Link URL')
                     ->limit(30)
                     ->url(fn($record) => $record->link_url)
-                    ->openUrlInNewTab(),
+                    ->openUrlInNewTab()
+                    ->placeholder('No link'),
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Active'),
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('Order')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created')
+                    ->dateTime()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('sort_order', 'asc')
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('Status')
+                    ->placeholder('All banners')
+                    ->trueLabel('Active only')
+                    ->falseLabel('Inactive only'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

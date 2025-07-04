@@ -1,16 +1,22 @@
 @extends('layouts.app')
 @section('title', 'EKRAF KUNINGAN')
 @section('content')
-    <div class="relative h-44 md:h-15 bg-center bg-cover flex items-center"
+    <!-- Hero Section -->
+    <div class="relative h-64 md:h-96 lg:h-[500px] bg-center bg-cover flex items-center"
         style="background-image: url('{{ asset('assets/img/BGKontak.png') }}');">
         <div class="bg-black bg-opacity-50 w-full h-full absolute top-0 left-0"></div>
-        <div class="relative z-10 text-white text-left px-6 md:px-12">
-            <p class="mt-2 text-base md:text-lg">
-                <a href="/" class="hover:underline">Home</a> >
+        <div class="relative z-10 text-white text-center px-6 md:px-12 max-w-6xl mx-auto">
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">EKRAF KUNINGAN</h1>
+            <p class="text-lg md:text-xl lg:text-2xl mb-6 max-w-3xl mx-auto">
+                Platform Ekonomi Kreatif Kabupaten Kuningan
             </p>
-            <h1 class="text-3xl md:text-5xl font-bold">HOME</h1>
+            <p class="text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+                Bergabunglah dengan komunitas kreatif Kuningan untuk mengembangkan potensi dan menciptakan peluang bisnis yang inovatif
+            </p>
         </div>
     </div>
+
+   
     <!-- Section Ekonomi Kreatif -->
     <section class="max-w-6xl mx-auto py-14 px-6 grid md:grid-cols-2 gap-8 items-start">
         <div>
@@ -183,12 +189,5 @@
             </div>
         </div>
     </section>
-
-
-
-
-
-
-
 
 @endsection
