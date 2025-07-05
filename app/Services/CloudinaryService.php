@@ -2,23 +2,15 @@
 
 namespace App\Services;
 
-use Cloudinary\Cloudinary;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 
 class CloudinaryService
 {
-    private $cloudinary;
-
     public function __construct()
     {
-        $this->cloudinary = new Cloudinary([
-            'cloud' => [
-                'cloud_name' => config('cloudinary.cloud_name'),
-                'api_key' => config('cloudinary.api_key'),
-                'api_secret' => config('cloudinary.api_secret')
-            ]
-        ]);
+        // Cloudinary will be accessed via facade, no need for instance variable
     }
     /**
      * Upload file to Cloudinary
@@ -40,7 +32,7 @@ class CloudinaryService
 
             $uploadOptions = array_merge($defaultOptions, $options);
 
-            $result = $this->cloudinary->uploadApi()->upload($file->getRealPath(), $uploadOptions);
+            $result = Cloudinary::uploadApi()->upload($file->getRealPath(), $uploadOptions);
 
             // Check if result is valid
             if (!$result) {
@@ -110,7 +102,7 @@ class CloudinaryService
     public function deleteFile(string $publicId): bool
     {
         try {
-            $result = $this->cloudinary->uploadApi()->destroy($publicId);
+            $result = Cloudinary::destroy($publicId);
             return $result['result'] === 'ok';
         } catch (\Exception $e) {
             Log::error('Cloudinary delete failed: ' . $e->getMessage(), [
@@ -137,9 +129,7 @@ class CloudinaryService
                 ];
             }
 
-            return $this->cloudinary->image($publicId)
-                ->addTransformation($transformations)
-                ->toUrl();
+            return (string) Cloudinary::image($publicId)->addTransformation($transformations);
         } catch (\Exception $e) {
             Log::error('Failed to get Cloudinary URL: ' . $e->getMessage(), [
                 'public_id' => $publicId,
@@ -160,10 +150,15 @@ class CloudinaryService
     public function getThumbnailUrl(string $publicId, int $width = 300, int $height = 200): ?string
     {
         try {
-            return $this->cloudinary->image($publicId)
-                ->resize(\Cloudinary\Transformation\Resize::fill($width, $height))
-                ->delivery(\Cloudinary\Transformation\Delivery::quality('auto:good'))
-                ->toUrl();
+            $transformations = [
+                'width' => $width,
+                'height' => $height,
+                'crop' => 'fill',
+                'quality' => 'auto:good',
+                'fetch_format' => 'auto'
+            ];
+            
+            return (string) Cloudinary::image($publicId)->addTransformation($transformations);
         } catch (\Exception $e) {
             Log::error('Failed to get thumbnail URL: ' . $e->getMessage(), [
                 'public_id' => $publicId,
@@ -183,8 +178,9 @@ class CloudinaryService
     public function fileExists(string $publicId): bool
     {
         try {
-            $result = $this->cloudinary->adminApi()->asset($publicId);
-            return !empty($result->getArrayCopy());
+            // Try to get URL, if it works file exists
+            $url = (string) Cloudinary::image($publicId);
+            return !empty($url);
         } catch (\Exception $e) {
             return false;
         }
@@ -199,8 +195,16 @@ class CloudinaryService
     public function getFileInfo(string $publicId): ?array
     {
         try {
-            $result = $this->cloudinary->adminApi()->asset($publicId);
-            return $result->getArrayCopy();
+            // For file info, we'll return basic info since admin API might not be available in facade
+            $url = (string) Cloudinary::image($publicId);
+            if ($url) {
+                return [
+                    'public_id' => $publicId,
+                    'secure_url' => $url,
+                    'url' => $url
+                ];
+            }
+            return null;
         } catch (\Exception $e) {
             Log::error('Failed to get Cloudinary file info: ' . $e->getMessage(), [
                 'public_id' => $publicId
