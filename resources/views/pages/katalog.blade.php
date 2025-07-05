@@ -46,17 +46,8 @@
                 <a href="{{ route('katalog.show', $katalog->slug) }}">
                     <div
                         class="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition transform hover:scale-105 duration-300">
-                        @if($katalog->image && file_exists(public_path('storage/' . $katalog->image)))
-                            <img src="{{ asset('storage/' . $katalog->image) }}" alt="{{ $katalog->title }}"
-                                class="w-full h-40 object-cover">
-                        @else
-                            <div class="w-full h-40 bg-gray-200 flex items-center justify-center">
-                                <div class="text-center text-gray-400">
-                                    <i class="fas fa-image text-2xl mb-1"></i>
-                                    <p class="text-xs">No Image</p>
-                                </div>
-                            </div>
-                        @endif
+                        <img src="{{ $katalog->image_url }}" alt="{{ $katalog->title }}"
+                            class="w-full h-40 object-cover">
                         <div class="p-4">
                             <h3 class="text-base font-bold text-orange-600 mb-1">{{ $katalog->title }}</h3>
                             <p class="text-xs text-gray-600 mb-3">{{ Str::limit(strip_tags($katalog->content), 80) }}</p>

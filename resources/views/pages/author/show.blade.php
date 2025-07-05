@@ -4,7 +4,7 @@
     <!-- Author -->
     <div class="flex gap-4 items-center mb-10 text-white p-10 bg-cover"
         style="background-image: url('{{ asset('assets/img/bg-profile.png') }}')">
-        <img src="{{ asset('storage/' . $author->avatar) }}" alt="profile" class="rounded-full max-w-28 ">
+        <img src="{{ $author->avatar_url }}" alt="profile" class="rounded-full max-w-28 ">
         <div class="">
             <p class="font-bold text-lg">{{ $author->name }}</p>
             <p>{{ $author->bio }}</p>
@@ -22,7 +22,7 @@
                         <div
                             class="bg-primary text-white rounded-full w-fit px-5 py-1 font-normal ml-2 mt-2 text-sm absolute">
                             {{ $artikel->artikelkategori->title }}</div>
-                        <img src="{{ asset('storage/' . $artikel->thumbnail) }}" alt="" class="w-full rounded-xl mb-3"
+                        <img src="{{ $artikel->thumbnail_url }}" alt="" class="w-full rounded-xl mb-3"
                         style="height: 200px; object-fit: cover;">
                         <p class="font-bold text-base mb-1">{{ $artikel->title }}</p>
                         <p class="text-slate-400">{{ \Carbon\Carbon::parse($artikel->created_at)->format('d F Y') }}</p>

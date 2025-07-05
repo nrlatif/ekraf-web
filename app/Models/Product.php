@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Services\CloudinaryService;
 
 class Product extends Model
 {
@@ -15,6 +16,9 @@ class Product extends Model
         'price',
         'stock',
         'image',
+        'cloudinary_id',
+        'cloudinary_meta',
+        'image_meta',
         'phone_number',
         'uploaded_at',
         'user_id',
@@ -24,7 +28,9 @@ class Product extends Model
 
     protected $casts = [
         'uploaded_at' => 'datetime',
-        'price' => 'decimal:2'
+        'price' => 'decimal:2',
+        'image_meta' => 'array',
+        'cloudinary_meta' => 'array',
     ];
 
     public function user()
@@ -53,5 +59,46 @@ class Product extends Model
                     ->withTimestamps()
                     ->withPivot(['sort_order', 'is_featured'])
                     ->orderBy('sort_order');
+    }
+
+    /**
+     * Get image URL with fallback
+     */
+    public function getImageUrlAttribute(): string
+    {
+        // If we have a Cloudinary ID, use it
+        if (!empty($this->cloudinary_id)) {
+            $cloudinaryService = app(CloudinaryService::class);
+            $cloudinaryUrl = $cloudinaryService->getThumbnailUrl($this->cloudinary_id, 500, 500);
+            
+            if ($cloudinaryUrl) {
+                return $cloudinaryUrl;
+            }
+        }
+
+        // Fallback to local storage if image exists
+        if (!empty($this->image) && file_exists(public_path('storage/' . $this->image))) {
+            return asset('storage/' . $this->image);
+        }
+
+        // Final fallback to placeholder
+        return asset('assets/img/placeholder-product.svg');
+    }
+
+    /**
+     * Get optimized image for different sizes
+     */
+    public function getImageUrl(int $width = 300, int $height = 300): string
+    {
+        if (!empty($this->cloudinary_id)) {
+            $cloudinaryService = app(CloudinaryService::class);
+            $cloudinaryUrl = $cloudinaryService->getThumbnailUrl($this->cloudinary_id, $width, $height);
+            
+            if ($cloudinaryUrl) {
+                return $cloudinaryUrl;
+            }
+        }
+
+        return $this->image_url;
     }
 }

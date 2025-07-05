@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Services\CloudinaryService;
 
 class User extends Authenticatable
 {
@@ -25,6 +26,8 @@ class User extends Authenticatable
         'gender',
         'phone_number',
         'image',
+        'cloudinary_id',
+        'cloudinary_meta',
         'business_name',
         'business_status',
         'level_id',
@@ -57,6 +60,9 @@ class User extends Authenticatable
             'password' => 'hashed',
             'resetPasswordTokenExpiry' => 'datetime',
             'verifiedAt' => 'datetime',
+            'level_id' => 'integer',
+            'business_category_id' => 'integer',
+            'cloudinary_meta' => 'array',
         ];
     }
 
@@ -114,5 +120,54 @@ class User extends Authenticatable
     public function hasAdminAccess(): bool
     {
         return $this->level_id === 1 || $this->level_id === 2;
+    }
+
+    /**
+     * Get profile image URL with fallback
+     */
+    public function getProfileImageUrlAttribute(): string
+    {
+        // If we have a Cloudinary ID, use it
+        if (!empty($this->cloudinary_id)) {
+            $cloudinaryService = app(CloudinaryService::class);
+            $cloudinaryUrl = $cloudinaryService->getThumbnailUrl($this->cloudinary_id, 200, 200);
+            
+            if ($cloudinaryUrl) {
+                return $cloudinaryUrl;
+            }
+        }
+
+        // Fallback to local storage if image exists
+        if (!empty($this->image) && file_exists(public_path('storage/' . $this->image))) {
+            return asset('storage/' . $this->image);
+        }
+
+        // Final fallback to default avatar
+        return asset('assets/img/default-avatar.svg');
+    }
+
+    /**
+     * Get optimized profile image for different sizes
+     */
+    public function getProfileImageUrl(int $width = 200, int $height = 200): string
+    {
+        if (!empty($this->cloudinary_id)) {
+            $cloudinaryService = app(CloudinaryService::class);
+            $cloudinaryUrl = $cloudinaryService->getThumbnailUrl($this->cloudinary_id, $width, $height);
+            
+            if ($cloudinaryUrl) {
+                return $cloudinaryUrl;
+            }
+        }
+
+        return $this->profile_image_url;
+    }
+
+    /**
+     * Get avatar URL with fallback (alias for profile_image_url)
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        return $this->profile_image_url;
     }
 }

@@ -39,7 +39,7 @@ class UserResource extends Resource
                             ->directory('users')
                             ->disk('public')
                             ->visibility('public')
-                            ->maxSize(1024) // 1MB
+                            ->maxSize(5120) // 5MB
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->imageResizeMode('cover')
                             ->imageCropAspectRatio('1:1')
@@ -47,7 +47,8 @@ class UserResource extends Resource
                             ->imageResizeTargetHeight('200')
                             ->avatar()
                             ->nullable()
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->helperText('Upload avatar user. Gambar akan diupload ke Cloudinary. Ukuran ideal: 200x200px'),
                             
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -111,7 +112,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image')
+                Tables\Columns\ImageColumn::make('avatar_url')
                     ->label('Profile Picture')
                     ->circular()
                     ->size(40),

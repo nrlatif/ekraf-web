@@ -30,17 +30,18 @@ class AuthorResource extends Resource
                 Forms\Components\FileUpload::make('avatar')
                     ->label('Profile Picture')
                     ->image()
-                    ->directory('authors')
-                    ->disk('public')
-                    ->visibility('public')
-                    ->maxSize(1024) // 1MB
+                    ->maxSize(20480) // 20MB
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('1:1')
                     ->imageResizeTargetWidth('200')
                     ->imageResizeTargetHeight('200')
                     ->avatar()
-                    ->required(),
+                    ->required()
+                    ->disk('public')
+                    ->directory('authors')
+                    ->visibility('public')
+                    ->helperText('Upload avatar author. Gambar akan diupload ke Cloudinary. Ukuran ideal: 200x200px'),
                 Forms\Components\TextArea::make('bio')
                 ->required()
             ]);
@@ -50,8 +51,9 @@ class AuthorResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('avatar')
-                ->circular(),
+                Tables\Columns\ImageColumn::make('avatar_url')
+                    ->label('Avatar')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('username'),
                 Tables\Columns\TextColumn::make('bio'),

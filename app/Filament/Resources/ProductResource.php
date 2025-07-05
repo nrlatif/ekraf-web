@@ -76,13 +76,14 @@ class ProductResource extends Resource
                     ->directory('products')
                     ->disk('public')
                     ->visibility('public')
-                    ->maxSize(2048) // 2MB
+                    ->maxSize(8192) // 8MB
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('1:1')
                     ->imageResizeTargetWidth('500')
                     ->imageResizeTargetHeight('500')
-                    ->required(),
+                    ->required()
+                    ->helperText('Upload gambar produk. Gambar akan diupload ke Cloudinary. Ukuran ideal: 500x500px (1:1). Max: 8MB'),
 
                 Forms\Components\TextInput::make('phone_number')
                     ->label('Phone Number')
@@ -152,7 +153,7 @@ class ProductResource extends Resource
                     ->label('Stock')
                     ->sortable(),
 
-                Tables\Columns\ImageColumn::make('image')
+                Tables\Columns\ImageColumn::make('image_url')
                     ->label('Image')
                     ->square(),
 

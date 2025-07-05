@@ -40,14 +40,15 @@ class KatalogResource extends Resource
                     ->directory('katalogs')
                     ->disk('public')
                     ->visibility('public')
-                    ->maxSize(2048) // 2MB
+                    ->maxSize(8192) // 8MB
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('4:3')
                     ->imageResizeTargetWidth('800')
                     ->imageResizeTargetHeight('600')
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->helperText('Upload gambar katalog. Gambar akan diupload ke Cloudinary. Ukuran ideal: 800x600px (4:3). Max: 8MB'),
 
                 Forms\Components\RichEditor::make('content')
                     ->label('Deskripsi Katalog')
@@ -127,7 +128,7 @@ class KatalogResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image')
+                Tables\Columns\ImageColumn::make('image_url')
                     ->label('Image')
                     ->square()
                     ->size(50),

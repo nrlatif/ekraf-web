@@ -51,7 +51,7 @@ class BannerResource extends Resource
                     ->directory('banners')
                     ->disk('public')
                     ->visibility('public')
-                    ->maxSize(5120) // 5MB
+                    ->maxSize(15360) // 15MB
                     ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('16:9')
@@ -59,7 +59,7 @@ class BannerResource extends Resource
                     ->imageResizeTargetHeight('675')
                     ->required()
                     ->columnSpanFull()
-                    ->helperText('Upload gambar banner untuk slider. Ukuran ideal: 1200x675px (16:9). Max 5MB')
+                    ->helperText('Upload gambar banner untuk slider. Gambar akan diupload ke Cloudinary. Ukuran ideal: 1200x675px (16:9). Max: 15MB')
                     ->uploadingMessage('Uploading banner image...')
                     ->downloadable()
                     ->openable()
@@ -89,7 +89,7 @@ class BannerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image')
+                Tables\Columns\ImageColumn::make('image_url')
                     ->label('Banner Image')
                     ->square()
                     ->size(80),

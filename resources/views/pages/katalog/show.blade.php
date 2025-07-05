@@ -111,17 +111,8 @@
             </div>
 
             <div>
-                @if($katalog->image && file_exists(public_path('storage/' . $katalog->image)))
-                    <img src="{{ asset('storage/' . $katalog->image) }}" alt="{{ $katalog->title }}"
-                        class="rounded-2xl shadow w-full object-cover">
-                @else
-                    <div class="rounded-2xl shadow w-full h-64 bg-gray-200 flex items-center justify-center">
-                        <div class="text-center text-gray-400">
-                            <i class="fas fa-image text-4xl mb-2"></i>
-                            <p class="text-sm">Gambar tidak tersedia</p>
-                        </div>
-                    </div>
-                @endif
+                <img src="{{ $katalog->image_url }}" alt="{{ $katalog->title }}"
+                    class="rounded-2xl shadow w-full object-cover">
             </div>
         </div>
 
@@ -134,17 +125,8 @@
                 <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100">
                     <!-- Product Image -->
                     <div class="relative">
-                        @if($product->image && file_exists(public_path('storage/' . $product->image)))
-                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                                class="w-full h-48 object-cover">
-                        @else
-                            <div class="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                                <div class="text-center text-gray-400">
-                                    <i class="fas fa-box text-3xl mb-2"></i>
-                                    <p class="text-sm font-medium">No Image</p>
-                                </div>
-                            </div>
-                        @endif
+                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
+                            class="w-full h-48 object-cover">
 
                         <!-- Category Badge -->
                         <div class="absolute top-3 right-3">
@@ -199,17 +181,8 @@
                 <a href="{{ route('katalog.show', $kat->slug) }}">
                     <div
                         class="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition transform hover:scale-105 duration-300">
-                        @if($kat->image && file_exists(public_path('storage/' . $kat->image)))
-                            <img src="{{ asset('storage/' . $kat->image) }}" alt="{{ $kat->title }}"
-                                class="w-full h-40 object-cover">
-                        @else
-                            <div class="w-full h-40 bg-gray-200 flex items-center justify-center">
-                                <div class="text-center text-gray-400">
-                                    <i class="fas fa-image text-2xl mb-1"></i>
-                                    <p class="text-xs">No Image</p>
-                                </div>
-                            </div>
-                        @endif
+                        <img src="{{ $kat->image_url }}" alt="{{ $kat->title }}"
+                            class="w-full h-40 object-cover">
                         <div class="p-4">
                             <h3 class="text-base font-bold text-orange-600 mb-1">{{ $kat->title }}</h3>
                             <p class="text-xs text-gray-600 mb-3">{{ Str::limit(strip_tags($kat->content), 80) }}</p>

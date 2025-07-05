@@ -22,7 +22,7 @@
                     <div class="relative h-64 md:h-80 lg:h-96 rounded-xl overflow-hidden">
                         <!-- Background Image with better positioning -->
                         <div class="absolute inset-0 bg-center bg-cover bg-no-repeat"
-                             style="background-image: url('{{ $banner->image ? asset('storage/' . $banner->image) : ($banner->artikel && $banner->artikel->thumbnail ? asset('storage/' . $banner->artikel->thumbnail) : asset('assets/img/BGKontak.png')) }}');">
+                             style="background-image: url('{{ $banner->image_url ?? ($banner->artikel ? $banner->artikel->thumbnail_url : asset('assets/img/BGKontak.png')) }}');">
                         </div>
                         
                         <!-- Enhanced Gradient Overlay -->
@@ -55,7 +55,7 @@
                             @if($banner->artikel && $banner->artikel->author)
                             <div class="flex items-center gap-3 mb-4">
                                 <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white/30">
-                                    <img src="{{ $banner->artikel->author->avatar ? asset('storage/' . $banner->artikel->author->avatar) : asset('assets/img/default-avatar.png') }}" 
+                                    <img src="{{ $banner->artikel->author->avatar_url }}" 
                                          alt="{{ $banner->artikel->author->name }}"
                                          class="w-full h-full object-cover">
                                 </div>
@@ -116,7 +116,7 @@
                         style="height: 100%">
 
                         <div class="mb-2">
-                            <img src="{{ asset('storage/' . $featured->thumbnail) }}" alt="Thumbnail"
+                            <img src="{{ $featured->thumbnail_url }}" alt="Thumbnail"
                                 class="w-full h-40 object-cover rounded-md">
                         </div>
 
@@ -154,7 +154,7 @@
                     <a href="{{ route('artikels.show', $artikels[0]->slug) }}"
                         class="block bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition duration-300">
                         <div class="relative">
-                            <img src="{{ asset('storage/' . $artikels[0]->thumbnail) }}" alt="berita utama"
+                            <img src="{{ $artikels[0]->thumbnail_url }}" alt="berita utama"
                                 class="w-full h-64 object-cover rounded-t-xl">
                             <span
                                 class="absolute top-4 left-4 bg-orange-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
@@ -182,7 +182,7 @@
                     <a href="{{ route('artikels.show', $artikel->slug) }}"
                         class="flex gap-3 border border-slate-200 p-3 rounded-xl shadow-sm hover:border-primary hover:shadow-md transition duration-300 bg-white">
                         <div class="relative w-1/3">
-                            <img src="{{ asset('storage/' . $artikel->thumbnail) }}" alt="berita"
+                            <img src="{{ $artikel->thumbnail_url }}" alt="berita"
                                 class="rounded-xl h-24 w-full object-cover">
                             <span
                                 class="absolute top-1 left-1 bg-orange-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded shadow-sm">
@@ -226,7 +226,7 @@
             @foreach ($authors as $author)
                 <a href="{{ route('author.show', $author->username) }}"
                     class="border border-slate-200 bg-white p-6 rounded-2xl flex flex-col items-center text-center shadow-sm hover:shadow-md hover:border-primary transition duration-300 ease-in-out">
-                    <img src="{{ asset('storage/' . $author->avatar) }}" alt="{{ $author->name }}"
+                    <img src="{{ $author->avatar_url }}" alt="{{ $author->name }}"
                         class="rounded-full w-24 h-24 object-cover mb-4 border-2 border-primary shadow">
                     <p class="font-semibold text-lg text-gray-800">{{ $author->name }}</p>
                     <p class="text-sm text-slate-500 mt-1">{{ $author->artikel->count() }} Berita</p>
@@ -251,7 +251,7 @@
                         class="bg-white border border-slate-200 p-3 rounded-xl shadow-sm hover:shadow-md hover:border-primary transition duration-300 ease-in-out h-full overflow-hidden">
 
                         <div class="mb-2">
-                            <img src="{{ asset('storage/' . $artikel->thumbnail) }}" alt="{{ $artikel->title }}"
+                            <img src="{{ $artikel->thumbnail_url }}" alt="{{ $artikel->title }}"
                                 class="w-full h-40 object-cover rounded-md">
                         </div>
 

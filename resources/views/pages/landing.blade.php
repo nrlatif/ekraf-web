@@ -73,17 +73,8 @@
                 @foreach ($katalogs as $kat)
                     <a href="{{ route('katalog.show', $kat->slug) }}" class="block transform hover:scale-105 transition duration-300">
                         <div class="bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-100 overflow-hidden">
-                            @if($kat->image && file_exists(public_path('storage/' . $kat->image)))
-                                <img src="{{ asset('storage/' . $kat->image) }}" alt="{{ $kat->title }}"
-                                    class="h-48 w-full object-cover">
-                            @else
-                                <div class="h-48 w-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                                    <div class="text-center text-gray-400">
-                                        <i class="fas fa-image text-3xl mb-2"></i>
-                                        <p class="text-sm">No Image</p>
-                                    </div>
-                                </div>
-                            @endif
+                            <img src="{{ $kat->image_url }}" alt="{{ $kat->title }}"
+                                class="h-48 w-full object-cover">
                             <div class="p-4 text-left">
                                 <h3 class="text-base font-bold text-orange-600 mb-2 line-clamp-2">{{ $kat->title }}</h3>
                                 <p class="text-sm text-gray-600 mb-3 line-clamp-2">

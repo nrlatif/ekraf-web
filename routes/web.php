@@ -32,5 +32,23 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [CustomLoginController::class, 'destroy'])->name('logout');
 });
 
+// Route untuk menangani storage files dengan CORS headers
+Route::get('/storage/{path}', function ($path) {
+    $filePath = storage_path('app/public/' . $path);
+    
+    if (!file_exists($filePath)) {
+        abort(404);
+    }
+    
+    $response = response()->file($filePath);
+    
+    // Tambahkan CORS headers
+    $response->headers->set('Access-Control-Allow-Origin', '*');
+    $response->headers->set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    $response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
+    
+    return $response;
+})->where('path', '.*');
+
 // Include authentication routes (excluding login routes that we override)
 require __DIR__.'/auth.php';

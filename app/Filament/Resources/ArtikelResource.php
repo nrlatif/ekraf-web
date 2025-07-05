@@ -37,21 +37,44 @@ class ArtikelResource extends Resource
                 ->required(),
                 Forms\Components\TextInput::make('slug')
                 ->readOnly(),
+                
+                Forms\Components\Section::make('Current Thumbnail')
+                    ->description('Gambar thumbnail yang saat ini digunakan')
+                    ->schema([
+                        Forms\Components\Placeholder::make('current_thumbnail')
+                            ->label('')
+                            ->content(function ($record) {
+                                if ($record && $record->cloudinary_id) {
+                                    return new \Illuminate\Support\HtmlString(
+                                        '<div class="flex items-center gap-4">
+                                            <img src="' . $record->thumbnail_url . '" alt="Current thumbnail" class="w-32 h-20 object-cover rounded">
+                                            <div>
+                                                <p class="text-sm font-medium">Gambar disimpan di Cloudinary</p>
+                                                <p class="text-xs text-gray-500">Upload gambar baru untuk mengganti</p>
+                                            </div>
+                                        </div>'
+                                    );
+                                }
+                                return 'Belum ada gambar yang diupload';
+                            })
+                    ])
+                    ->collapsible()
+                    ->hidden(fn ($record) => !$record || !$record->cloudinary_id),
+                
                 Forms\Components\FileUpload::make('thumbnail')
                     ->label('Article Thumbnail')
                     ->image()
                     ->directory('articles')
                     ->disk('public')
                     ->visibility('public')
-                    ->maxSize(2048) // 2MB
+                    ->maxSize(10240) // 10MB
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('16:9')
                     ->imageResizeTargetWidth('800')
                     ->imageResizeTargetHeight('450')
-                    ->required()
                     ->columnSpanFull()
-                    ->helperText('Upload thumbnail untuk artikel. Ukuran ideal: 800x450px'),
+                    ->helperText('Upload thumbnail untuk artikel. Gambar akan diupload ke Cloudinary. Ukuran ideal: 800x450px. Max: 10MB'),
                 Forms\Components\RichEditor::make('content')
                 ->required()
                 ->columnSpanFull(),
@@ -64,7 +87,7 @@ class ArtikelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('thumbnail')
+                Tables\Columns\ImageColumn::make('thumbnail_url')
                     ->label('Thumbnail')
                     ->square()
                     ->size(50),

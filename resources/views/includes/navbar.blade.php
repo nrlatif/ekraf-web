@@ -65,11 +65,6 @@
                                             <i class="fas fa-tachometer-alt mr-3 text-orange-500"></i>
                                             Dashboard Admin
                                         </a>
-                                        <a href="{{ route('2fa.manage') }}" 
-                                           class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                                            <i class="fas fa-shield-alt mr-3 text-green-500"></i>
-                                            Two-Factor Auth
-                                        </a>
                                         <div class="border-t border-gray-100 my-1"></div>
                                     @endif
                                     
@@ -167,11 +162,6 @@
                                class="mobile-nav-link admin">
                                 <i class="fas fa-tachometer-alt w-5 text-blue-500"></i>
                                 <span class="font-medium">DASHBOARD ADMIN</span>
-                            </a>
-                            <a href="{{ route('2fa.manage') }}" 
-                               class="mobile-nav-link admin">
-                                <i class="fas fa-shield-alt w-5 text-green-500"></i>
-                                <span class="font-medium">TWO-FACTOR AUTH</span>
                             </a>
                         @endif
                         
