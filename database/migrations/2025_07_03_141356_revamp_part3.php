@@ -53,6 +53,9 @@ return new class extends Migration
         });
 
         // 3. Menghapus kolom dan foreign key dari tabel 'products'
-
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropForeign(['business_category_id']);
+            $table->dropColumn('business_category_id');
+        });
     }
 };
