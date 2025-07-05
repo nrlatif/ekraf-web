@@ -120,20 +120,6 @@ npm run build
 ```bash
 php artisan serve --env=production
 ```
-
-## Filament Admin Panel
-
-Aplikasi ini menggunakan Filament untuk admin panel.
-
-### Membuat User Admin
-
-```bash
-php artisan make:filament-user
-```
-
-Ikuti prompt untuk membuat user admin, kemudian akses admin panel di:
-`http://localhost:8000/admin`
-
 ## Features
 
 - **Artikel Management**: Kelola artikel dengan kategori dan author
