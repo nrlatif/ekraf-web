@@ -173,12 +173,6 @@
                                 <p class="text-orange-600 font-bold text-sm">
                                     {{ $product->price ? 'Rp ' . number_format($product->price, 0, ',', '.') : 'Hubungi Penjual' }}
                                 </p>
-                                @if($product->stock)
-                                    <p class="text-xs text-gray-500">
-                                        <i class="fas fa-box-open text-[10px] mr-1"></i>
-                                        Stok: {{ $product->stock }}
-                                    </p>
-                                @endif
                             </div>
                         </div>
                         
