@@ -21,23 +21,10 @@
             {{ !request('sort') ? 'bg-orange-400 text-white' : 'bg-gray-100 text-gray-700' }}">
                     <i class="fas fa-list mr-2"></i> Semua
                 </a>
-
-                <a href="{{ route('katalog', ['sort' => 'termurah', 'subsektor' => request('subsektor')]) }}"
-                    class="flex items-center px-4 py-1 border rounded-full text-sm hover:bg-orange-500 hover:text-white 
-                {{ request('sort') == 'termurah' ? 'bg-orange-400 text-white' : 'bg-gray-100 text-gray-700' }}">
-                    <i class="fas fa-sort-amount-down-alt mr-2"></i> Termurah
-                </a>
-
                 <a href="{{ route('katalog', ['sort' => 'terbaru', 'subsektor' => request('subsektor')]) }}"
                     class="flex items-center px-4 py-1 border rounded-full text-sm hover:bg-orange-500 hover:text-white 
                 {{ request('sort') == 'terbaru' ? 'bg-orange-400 text-white' : 'bg-gray-100 text-gray-700' }}">
                     <i class="fas fa-clock mr-2"></i> Terbaru
-                </a>
-
-                <a href="{{ route('katalog', ['sort' => 'termahal', 'subsektor' => request('subsektor')]) }}"
-                    class="flex items-center px-4 py-1 border rounded-full text-sm hover:bg-orange-500 hover:text-white 
-                {{ request('sort') == 'termahal' ? 'bg-orange-400 text-white' : 'bg-gray-100 text-gray-700' }}">
-                    <i class="fas fa-sort-amount-up mr-2"></i> Termahal
                 </a>
             </div>
 
