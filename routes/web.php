@@ -3,15 +3,18 @@
 use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\LandingController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\KontakController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\KatalogController;
 use App\Http\Controllers\Auth\CustomLoginController;
+use Illuminate\Support\Str;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::get('/search', function() {
+    return view('pages.search');
+})->name('search');
 Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog');
 Route::get('/katalog/detail/{slug}', [KatalogController::class, 'show'])->name('katalog.show');
 Route::get('/katalog/subsektor/{subsektor}', [KatalogController::class, 'bySubsektor'])->name('katalog.subsektor');
@@ -49,6 +52,5 @@ Route::get('/storage/{path}', function ($path) {
     
     return $response;
 })->where('path', '.*');
-
 // Include authentication routes (excluding login routes that we override)
 require __DIR__.'/auth.php';

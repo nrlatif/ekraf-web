@@ -14,14 +14,19 @@
 
                 <!-- Desktop Search Bar -->
                 <div class="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8">
-                    <div class="relative w-full">
+                    <form id="desktop-search-form" class="relative w-full">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-green-700 text-sm"></i>
                         </div>
                         <input type="text" 
+                               name="q"
+                               id="desktop-search"
                                placeholder="Cari produk, artikel, atau informasi..." 
-                               class="w-full pl-10 pr-4 py-2 bg-gradient-to-r from-yellow-200 via-yellow-300 to-orange-200 text-green-900 placeholder-green-700 font-medium rounded-full text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-white border border-white/50 transition-all duration-300">
-                    </div>
+                               class="w-full pl-10 pr-12 py-2 bg-gradient-to-r from-yellow-200 via-yellow-300 to-orange-200 text-green-900 placeholder-green-700 font-medium rounded-full text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-white border border-white/50 transition-all duration-300">
+                        <button type="submit" class="absolute inset-y-0 right-0 pr-3 flex items-center text-green-700 hover:text-green-800 transition-colors">
+                            <i class="fas fa-arrow-right text-sm"></i>
+                        </button>
+                    </form>
                 </div>
 
                 <!-- Desktop Navigation -->
@@ -109,14 +114,19 @@
 
         <!-- Mobile Search Bar -->
         <div id="mobile-search" class="md:hidden hidden bg-white/95 backdrop-blur-sm px-4 py-3 border-t border-orange-200">
-            <div class="relative">
+            <form id="mobile-search-form" class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-search text-green-700"></i>
                 </div>
                 <input type="text" 
+                       name="q"
+                       id="mobile-search-input"
                        placeholder="Cari produk, artikel, atau informasi..." 
-                       class="w-full pl-10 pr-4 py-3 bg-gradient-to-r from-yellow-200 via-yellow-300 to-orange-200 text-green-900 placeholder-green-700 font-medium rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 border border-white/50">
-            </div>
+                       class="w-full pl-10 pr-12 py-3 bg-gradient-to-r from-yellow-200 via-yellow-300 to-orange-200 text-green-900 placeholder-green-700 font-medium rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 border border-white/50">
+                <button type="submit" class="absolute inset-y-0 right-0 pr-3 flex items-center text-green-700 hover:text-green-800 transition-colors">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
         </div>
 
         <!-- Enhanced Mobile Menu -->
@@ -477,6 +487,60 @@
                     }, 3000);
                 }
             });
+        });
+
+        // Enhanced search functionality
+        const desktopSearch = document.getElementById('desktop-search');
+        const mobileSearchInput = document.getElementById('mobile-search-input');
+        const desktopSearchForm = document.getElementById('desktop-search-form');
+        const mobileSearchForm = document.getElementById('mobile-search-form');
+        
+        // Handle search form submissions
+        function handleSearchSubmit(e, input) {
+            e.preventDefault();
+            const query = input.value.trim();
+            
+            if (query) {
+                // Redirect to search page with query
+                window.location.href = `/search?q=${encodeURIComponent(query)}`;
+            }
+        }
+        
+        if (desktopSearchForm) {
+            desktopSearchForm.addEventListener('submit', function(e) {
+                handleSearchSubmit(e, desktopSearch);
+            });
+        }
+        
+        if (mobileSearchForm) {
+            mobileSearchForm.addEventListener('submit', function(e) {
+                handleSearchSubmit(e, mobileSearchInput);
+            });
+        }
+        
+        // Auto-submit on Enter key and visual feedback
+        [desktopSearch, mobileSearchInput].forEach(input => {
+            if (input) {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const query = this.value.trim();
+                        if (query) {
+                            window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                        }
+                    }
+                });
+                
+                // Add search suggestions (visual feedback)
+                input.addEventListener('input', function() {
+                    const query = this.value.toLowerCase();
+                    if (query.length > 0) {
+                        this.style.borderColor = '#10b981';
+                    } else {
+                        this.style.borderColor = '';
+                    }
+                });
+            }
         });
     });
     </script>

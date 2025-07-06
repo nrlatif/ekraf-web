@@ -142,13 +142,16 @@ Route::get('/search', function (Request $request) {
         $katalogs = \App\Models\Katalog::with(['subSektor'])
             ->where('title', 'like', "%{$query}%")
             ->orWhere('content', 'like', "%{$query}%")
+            ->orWhere('contact', 'like', "%{$query}%")
             ->limit(10)
             ->get();
         $results['katalogs'] = $katalogs;
     }
     
     if ($type === 'all' || $type === 'product') {
-        $products = \App\Models\Product::with(['businessCategory'])
+        $products = \App\Models\Product::with(['businessCategory', 'katalogs' => function($query) {
+                $query->select('catalogs.id', 'catalogs.title', 'catalogs.slug');
+            }])
             ->where('name', 'like', "%{$query}%")
             ->orWhere('description', 'like', "%{$query}%")
             ->where('status', 'approved')
