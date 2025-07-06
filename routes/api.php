@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ArtikelKategoriController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\BusinessCategoryController;
+use App\Http\Controllers\Api\SyncController;
 use App\Http\Requests\Api\SearchRequest;
 
 /*
@@ -93,6 +94,25 @@ Route::prefix('business-category')->group(function () {
     Route::get('/', [BusinessCategoryController::class, 'index']);
     Route::get('/{id}', [BusinessCategoryController::class, 'show']);
     Route::get('/{id}/products', [BusinessCategoryController::class, 'products']);
+});
+
+// Sync Routes (untuk sinkronisasi dengan backend Next.js)
+Route::prefix('sync')->group(function () {
+    Route::get('/status', [SyncController::class, 'syncStatus']);
+    Route::post('/from-nextjs', [SyncController::class, 'syncFromNextjs']);
+    Route::post('/to-nextjs', [SyncController::class, 'pushToNextjs']);
+
+    // Manual push endpoints for testing
+    Route::post('/push-to-nextjs/{type}', [SyncController::class, 'pushToNextjs'])
+        ->where('type', 'all|authors|articles|products|katalogs');
+
+    Route::post('/push-single-to-nextjs/{type}/{id}', [SyncController::class, 'pushSingleRecord'])
+        ->where('type', 'authors|articles|products|katalogs');
+
+    // Observer status and config
+    Route::get('/observer-status', [SyncController::class, 'observerStatus']);
+    Route::post('/toggle-observer/{type}', [SyncController::class, 'toggleObserver'])
+        ->where('type', 'authors|articles|products|katalogs');
 });
 
 // General search endpoint (with stricter rate limiting)

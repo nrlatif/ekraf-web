@@ -3,12 +3,14 @@
 namespace App\Traits;
 
 use App\Services\CloudinaryService;
+use App\Services\ExternalImageUploadService;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 
 trait HandlesCloudinaryUploads
 {
     /**
-     * Upload file to Cloudinary and return updated data
+     * Upload file using External Service (Android-compatible) with Cloudinary fallback
      *
      * @param array $data
      * @param string $fileField
@@ -35,6 +37,54 @@ trait HandlesCloudinaryUploads
             $fullPath = storage_path('app/public/' . $filePath);
             
             if (file_exists($fullPath)) {
+                // First, try to upload to external service (Android-compatible)
+                $externalService = app(ExternalImageUploadService::class);
+                
+                try {
+                    $uploadedFile = new UploadedFile(
+                        $fullPath,
+                        basename($fullPath),
+                        mime_content_type($fullPath),
+                        null,
+                        true
+                    );
+                    
+                    $externalUrl = $externalService->uploadImage($uploadedFile);
+                    
+                    if ($externalUrl) {
+                        // Success with external service - use this URL
+                        $data[$fileField] = $externalUrl;
+                        
+                        // Clean up cloudinary fields since we're using external service
+                        $data[$cloudinaryIdField] = null;
+                        $data[$metaField] = [
+                            'service' => 'external',
+                            'url' => $externalUrl,
+                            'uploaded_at' => now()->toISOString()
+                        ];
+                        
+                        // Delete old Cloudinary image if exists
+                        if (!empty($oldCloudinaryId)) {
+                            $cloudinaryService = app(CloudinaryService::class);
+                            $cloudinaryService->deleteFile($oldCloudinaryId);
+                        }
+                        
+                        // Delete local file after successful upload
+                        if (file_exists($fullPath)) {
+                            unlink($fullPath);
+                        }
+                        
+                        return $data;
+                    }
+                } catch (\Exception $e) {
+                    // Log error but continue to Cloudinary fallback
+                    Log::warning('External image upload failed, falling back to Cloudinary', [
+                        'error' => $e->getMessage(),
+                        'file' => $filePath
+                    ]);
+                }
+                
+                // Fallback to Cloudinary if external service fails
                 $cloudinaryService = app(CloudinaryService::class);
                 $uploadedFile = new UploadedFile(
                     $fullPath,
@@ -57,13 +107,13 @@ trait HandlesCloudinaryUploads
                     $data[$cloudinaryIdField] = $result['public_id'];
                     $data[$metaField] = $result;
                     
+                    // Store Cloudinary URL in the original field for hybrid compatibility
+                    $data[$fileField] = $result['secure_url'];
+                    
                     // Delete local file after successful upload
                     if (file_exists($fullPath)) {
                         unlink($fullPath);
                     }
-                    
-                    // Clear file path since we're using Cloudinary
-                    $data[$fileField] = null;
                 }
             }
         }
@@ -72,7 +122,7 @@ trait HandlesCloudinaryUploads
     }
 
     /**
-     * Handle avatar upload specifically
+     * Handle avatar upload using external service (Android-compatible)
      */
     protected function handleAvatarUpload(array $data, string $userId = null, ?string $oldCloudinaryId = null): array
     {
@@ -89,41 +139,7 @@ trait HandlesCloudinaryUploads
     }
 
     /**
-     * Handle thumbnail upload specifically
-     */
-    protected function handleThumbnailUpload(array $data, ?string $oldCloudinaryId = null): array
-    {
-        return $this->handleCloudinaryUpload(
-            $data,
-            'thumbnail',
-            'thumbnail_cloudinary_id',
-            'thumbnail_meta',
-            'ekraf/articles',
-            800,
-            450,
-            $oldCloudinaryId
-        );
-    }
-
-    /**
-     * Handle banner image upload specifically
-     */
-    protected function handleBannerUpload(array $data, ?string $oldCloudinaryId = null): array
-    {
-        return $this->handleCloudinaryUpload(
-            $data,
-            'image',
-            'image_cloudinary_id',
-            'image_meta',
-            'ekraf/banners',
-            1200,
-            675,
-            $oldCloudinaryId
-        );
-    }
-
-    /**
-     * Handle product image upload specifically
+     * Handle product image upload using external service (Android-compatible)
      */
     protected function handleProductImageUpload(array $data, ?string $oldCloudinaryId = null): array
     {
@@ -135,23 +151,6 @@ trait HandlesCloudinaryUploads
             'ekraf/products',
             500,
             500,
-            $oldCloudinaryId
-        );
-    }
-
-    /**
-     * Handle catalog image upload specifically
-     */
-    protected function handleCatalogImageUpload(array $data, ?string $oldCloudinaryId = null): array
-    {
-        return $this->handleCloudinaryUpload(
-            $data,
-            'image',
-            'image_cloudinary_id',
-            'image_meta',
-            'ekraf/catalogs',
-            800,
-            600,
             $oldCloudinaryId
         );
     }

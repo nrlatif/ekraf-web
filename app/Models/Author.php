@@ -27,11 +27,17 @@ class Author extends Model
     }
 
     /**
-     * Get avatar URL with fallback
+     * Get avatar URL with smart detection and fallback
      */
     public function getAvatarUrlAttribute(): string
     {
-        // If we have a Cloudinary ID, use it
+        // 1. PRIORITY: Direct URL from external service (Android-compatible)
+        // If avatar field contains full URL (from external service, Next.js backend or Cloudinary), use it directly
+        if (!empty($this->avatar) && (str_starts_with($this->avatar, 'http://') || str_starts_with($this->avatar, 'https://'))) {
+            return $this->avatar;
+        }
+
+        // 2. FALLBACK: If we have a Cloudinary ID (old Laravel admin upload), use it
         if (!empty($this->cloudinary_id)) {
             $cloudinaryService = app(CloudinaryService::class);
             $cloudinaryUrl = $cloudinaryService->getThumbnailUrl($this->cloudinary_id, 200, 200);
@@ -41,7 +47,7 @@ class Author extends Model
             }
         }
 
-        // Fallback to local storage if avatar exists
+        // 3. FALLBACK: Local storage if avatar exists (legacy)
         if (!empty($this->avatar)) {
             $localPath = public_path('storage/' . $this->avatar);
             if (file_exists($localPath)) {
@@ -49,7 +55,7 @@ class Author extends Model
             }
         }
 
-        // Final fallback to default avatar
+        // 4. Final fallback to default avatar
         return asset('assets/img/default-avatar.svg');
     }
 
@@ -68,5 +74,29 @@ class Author extends Model
         }
 
         return $this->avatar_url;
+    }
+
+    /**
+     * Get the source type of the current image for debugging
+     */
+    public function getImageSource(): string
+    {
+        // Check in priority order
+        if (!empty($this->avatar) && filter_var($this->avatar, FILTER_VALIDATE_URL)) {
+            return 'URL (Next.js/Cloudinary)';
+        }
+        
+        if (!empty($this->cloudinary_id)) {
+            return 'Cloudinary';
+        }
+        
+        if (!empty($this->avatar)) {
+            $localPath = public_path('storage/' . $this->avatar);
+            if (file_exists($localPath)) {
+                return 'Local Storage';
+            }
+        }
+        
+        return 'Default Fallback';
     }
 }

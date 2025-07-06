@@ -49,7 +49,13 @@ class Banner extends Model
      */
     public function getImageUrlAttribute(): string
     {
-        // If we have a Cloudinary ID, use it
+        // 1. PRIORITY: Direct URL from external service (Android-compatible)
+        // If image field contains full URL (from external service), use it directly
+        if (!empty($this->image) && (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://'))) {
+            return $this->image;
+        }
+
+        // 2. FALLBACK: If we have a Cloudinary ID (old Laravel admin upload), use it
         if (!empty($this->cloudinary_id)) {
             $cloudinaryService = app(CloudinaryService::class);
             $cloudinaryUrl = $cloudinaryService->getThumbnailUrl($this->cloudinary_id, 1200, 675);
@@ -59,12 +65,12 @@ class Banner extends Model
             }
         }
 
-        // Fallback to local storage if image exists
+        // 3. FALLBACK: Local storage if image exists (legacy)
         if (!empty($this->image) && file_exists(public_path('storage/' . $this->image))) {
             return asset('storage/' . $this->image);
         }
 
-        // Final fallback to placeholder
+        // 4. Final fallback to placeholder
         return asset('assets/img/placeholder-banner.svg');
     }
 

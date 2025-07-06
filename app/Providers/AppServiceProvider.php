@@ -6,6 +6,14 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
 use Illuminate\Cache\RateLimiting\Limit;
+use App\Models\Author;
+use App\Models\Artikel;
+use App\Models\Product;
+use App\Models\Katalog;
+use App\Observers\AuthorObserver;
+use App\Observers\ArtikelObserver;
+use App\Observers\ProductObserver;
+use App\Observers\KatalogObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,8 +30,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Register model observers (commented out since we handle in custom pages)
-        // \App\Models\Author::observe(\App\Observers\AuthorObserver::class);
+        // Register model observers for automatic sync to Next.js API
+        Author::observe(AuthorObserver::class);
+        Artikel::observe(ArtikelObserver::class);
+        Product::observe(ProductObserver::class);
+        Katalog::observe(KatalogObserver::class);
         
         // Configure API rate limiters
         RateLimiter::for('api', function (Request $request) {

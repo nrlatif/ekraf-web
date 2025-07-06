@@ -14,14 +14,6 @@ class CreateProduct extends CreateRecord
     
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        return $this->handleCloudinaryUpload(
-            $data,
-            'image',
-            'cloudinary_id',
-            'cloudinary_meta',
-            'products',
-            500,
-            500
-        );
+        return $this->handleProductImageUpload($data);
     }
 }
