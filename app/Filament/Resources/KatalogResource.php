@@ -119,8 +119,10 @@ class KatalogResource extends Resource
                     ->columnSpanFull(),
 
                 // Fields lama disembunyikan tapi tetap ada untuk backward compatibility
-                Forms\Components\Hidden::make('product_name'),
-                Forms\Components\Hidden::make('price'),
+                Forms\Components\Hidden::make('product_name')
+                    ->default(''),
+                Forms\Components\Hidden::make('price')
+                    ->default(0),
             ]);
     }
 

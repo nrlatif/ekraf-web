@@ -55,7 +55,7 @@
     <!-- Section Produk -->
     <section class="py-14 border-t">
         <div class="max-w-6xl mx-auto px-6 text-center">
-            <h2 class="text-2xl font-bold text-orange-500 mb-6">Produk</h2>
+            <h2 class="text-2xl font-bold text-orange-500 mb-6">SUB SEKTOR</h2>
 
             <div class="flex flex-wrap justify-center items-center text-sm text-gray-700 mb-10 space-x-2">
                 <a href="{{ route('katalog') }}" class="hover:text-orange-500">All</a>
@@ -71,23 +71,44 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-8">
                 @foreach ($katalogs as $kat)
-                    <a href="{{ route('katalog.show', $kat->slug) }}" class="block transform hover:scale-105 transition duration-300">
-                        <div class="bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-100 overflow-hidden">
-                            <img src="{{ $kat->image_url }}" alt="{{ $kat->title }}"
-                                class="h-48 w-full object-cover">
-                            <div class="p-4 text-left">
-                                <h3 class="text-base font-bold text-orange-600 mb-2 line-clamp-2">{{ $kat->title }}</h3>
-                                <p class="text-sm text-gray-600 mb-3 line-clamp-2">
-                                    {{ Str::limit(strip_tags($kat->content), 80) ?: 'Koleksi produk kreatif dari pelaku UMKM lokal' }}
+                    <a href="{{ route('katalog.show', $kat->slug) }}" class="block">
+                        <div class="catalog-card">
+                            <!-- Image Container -->
+                            <div class="catalog-card-image">
+                                <img src="{{ $kat->image_url }}" 
+                                     alt="{{ $kat->title }}"
+                                     class="w-full h-full object-cover transition-opacity duration-300"
+                                     onload="this.style.opacity='1'; this.nextElementSibling.style.display='none';"
+                                     onerror="this.onerror=null; this.src='{{ asset('assets/img/placeholder-catalog.jpg') }}'; this.style.opacity='1'; this.nextElementSibling.style.display='none';"
+                                     style="opacity:0;">
+                                <!-- Loading placeholder -->
+                                <div class="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <!-- Content Container -->
+                            <div class="catalog-card-content">
+                                <!-- Title -->
+                                <h3 class="catalog-card-title">
+                                    {{ $kat->title }}
+                                </h3>
+                                
+                                <!-- Description -->
+                                <p class="catalog-card-description">
+                                    {{ Str::limit(strip_tags($kat->content), 120) ?: 'Koleksi produk kreatif dari pelaku UMKM lokal' }}
                                 </p>
-                                <div class="flex items-center justify-between">
-                                    <span class="inline-block px-3 py-1 text-xs bg-orange-100 text-orange-700 rounded-full font-medium">
+                                
+                                <!-- Footer -->
+                                <div class="catalog-card-footer">
+                                    <span class="inline-block bg-orange-50 text-orange-600 text-xs px-3 py-1 rounded-full font-medium border border-orange-200">
                                         {{ $kat->subSektor->title ?? 'Sub Sektor' }}
                                     </span>
                                     @if($kat->products->count() > 0)
-                                        <span class="text-xs text-gray-500">
-                                            <i class="fas fa-box text-[10px] mr-1"></i>
-                                            {{ $kat->products->count() }} produk
+                                        <span class="text-xs text-gray-500 font-medium">
+                                            <i class="fas fa-box-open mr-1"></i>{{ $kat->products->count() }} produk
                                         </span>
                                     @endif
                                 </div>
@@ -99,7 +120,7 @@
 
             <button onclick="window.location.href='{{ route('katalog') }}'"
                 class="px-6 py-2 bg-orange-500 text-xs text-white rounded hover:bg-orange-600 transition">
-                Produk Lainnya
+                Katalog Lainnya
             </button>
         </div>
     </section>

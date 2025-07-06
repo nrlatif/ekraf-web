@@ -43,17 +43,47 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             @forelse($katalogs as $katalog)
-                <a href="{{ route('katalog.show', $katalog->slug) }}">
-                    <div
-                        class="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition transform hover:scale-105 duration-300">
-                        <img src="{{ $katalog->image_url }}" alt="{{ $katalog->title }}"
-                            class="w-full h-40 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-base font-bold text-orange-600 mb-1">{{ $katalog->title }}</h3>
-                            <p class="text-xs text-gray-600 mb-3">{{ Str::limit(strip_tags($katalog->content), 80) }}</p>
-                            <span class="inline-block bg-gray-100 text-[10px] px-2 py-1 rounded-full">
-                                {{ $katalog->subSektor->title ?? '-' }}
-                            </span>
+                <a href="{{ route('katalog.show', $katalog->slug) }}" class="block">
+                    <div class="catalog-card">
+                        <!-- Image Container -->
+                        <div class="catalog-card-image">
+                            <img src="{{ $katalog->image_url }}" 
+                                 alt="{{ $katalog->title }}"
+                                 class="w-full h-full object-cover transition-opacity duration-300"
+                                 onload="this.style.opacity='1'; this.nextElementSibling.style.display='none';"
+                                 onerror="this.onerror=null; this.src='{{ asset('assets/img/placeholder-catalog.jpg') }}'; this.style.opacity='1'; this.nextElementSibling.style.display='none';"
+                                 style="opacity:0;">
+                            <!-- Loading placeholder -->
+                            <div class="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+                                <svg class="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Content Container -->
+                        <div class="catalog-card-content">
+                            <!-- Title -->
+                            <h3 class="catalog-card-title">
+                                {{ $katalog->title }}
+                            </h3>
+                            
+                            <!-- Description -->
+                            <p class="catalog-card-description">
+                                {{ Str::limit(strip_tags($katalog->content), 120) }}
+                            </p>
+                            
+                            <!-- Footer -->
+                            <div class="catalog-card-footer">
+                                <span class="inline-block bg-orange-50 text-orange-600 text-xs px-3 py-1 rounded-full font-medium border border-orange-200">
+                                    {{ $katalog->subSektor->title ?? '-' }}
+                                </span>
+                                @if($katalog->products_count > 0)
+                                    <span class="text-xs text-gray-500 font-medium">
+                                        <i class="fas fa-box-open mr-1"></i>{{ $katalog->products_count }} produk
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </a>
@@ -65,7 +95,7 @@
 
         {{-- Info kecil --}}
         <div class="text-center text-xs text-gray-600 mt-6">
-            Menampilkan {{ $katalogs->count() }} dari total {{ $katalogs->total() }} produk
+            Menampilkan {{ $katalogs->count() }} dari total {{ $katalogs->total() }} katalog
         </div>
 
         {{-- Numbered pagination --}}

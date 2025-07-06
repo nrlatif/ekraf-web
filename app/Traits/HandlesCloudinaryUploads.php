@@ -34,20 +34,41 @@ trait HandlesCloudinaryUploads
     ): array {
         if (!empty($data[$fileField])) {
             $filePath = $data[$fileField];
-            $fullPath = storage_path('app/public/' . $filePath);
             
-            if (file_exists($fullPath)) {
+            // Handle different file path scenarios
+            $fullPath = null;
+            
+            // Check if it's a Livewire temporary file
+            if (is_string($filePath) && str_contains($filePath, 'livewire-tmp')) {
+                $fullPath = storage_path('app/livewire-tmp/' . basename($filePath));
+                if (!file_exists($fullPath)) {
+                    // Try alternative Livewire temp path
+                    $fullPath = storage_path('app/public/livewire-tmp/' . basename($filePath));
+                }
+            } 
+            // Check if it's a regular public storage path
+            elseif (is_string($filePath)) {
+                $fullPath = storage_path('app/public/' . $filePath);
+            }
+            // Handle UploadedFile objects
+            elseif ($filePath instanceof UploadedFile) {
+                $fullPath = $filePath->getRealPath();
+            }
+            
+            if ($fullPath && file_exists($fullPath)) {
                 // First, try to upload to external service (Android-compatible)
                 $externalService = app(ExternalImageUploadService::class);
                 
                 try {
-                    $uploadedFile = new UploadedFile(
-                        $fullPath,
-                        basename($fullPath),
-                        mime_content_type($fullPath),
-                        null,
-                        true
-                    );
+                    $uploadedFile = $filePath instanceof UploadedFile 
+                        ? $filePath 
+                        : new UploadedFile(
+                            $fullPath,
+                            basename($fullPath),
+                            mime_content_type($fullPath),
+                            null,
+                            true
+                        );
                     
                     $externalUrl = $externalService->uploadImage($uploadedFile);
                     
@@ -69,8 +90,8 @@ trait HandlesCloudinaryUploads
                             $cloudinaryService->deleteFile($oldCloudinaryId);
                         }
                         
-                        // Delete local file after successful upload
-                        if (file_exists($fullPath)) {
+                        // Clean up temporary file if it's not an UploadedFile object
+                        if (!($filePath instanceof UploadedFile) && file_exists($fullPath)) {
                             unlink($fullPath);
                         }
                         
@@ -86,13 +107,15 @@ trait HandlesCloudinaryUploads
                 
                 // Fallback to Cloudinary if external service fails
                 $cloudinaryService = app(CloudinaryService::class);
-                $uploadedFile = new UploadedFile(
-                    $fullPath,
-                    basename($fullPath),
-                    mime_content_type($fullPath),
-                    null,
-                    true
-                );
+                $uploadedFile = $filePath instanceof UploadedFile 
+                    ? $filePath 
+                    : new UploadedFile(
+                        $fullPath,
+                        basename($fullPath),
+                        mime_content_type($fullPath),
+                        null,
+                        true
+                    );
                 
                 $result = $width && $height 
                     ? $cloudinaryService->uploadImage($uploadedFile, $folder, $width, $height)
@@ -110,11 +133,17 @@ trait HandlesCloudinaryUploads
                     // Store Cloudinary URL in the original field for hybrid compatibility
                     $data[$fileField] = $result['secure_url'];
                     
-                    // Delete local file after successful upload
-                    if (file_exists($fullPath)) {
+                    // Clean up temporary file if it's not an UploadedFile object
+                    if (!($filePath instanceof UploadedFile) && file_exists($fullPath)) {
                         unlink($fullPath);
                     }
                 }
+            } else {
+                Log::warning('File not found for upload', [
+                    'filePath' => $filePath,
+                    'fullPath' => $fullPath,
+                    'fileField' => $fileField
+                ]);
             }
         }
 
@@ -151,6 +180,57 @@ trait HandlesCloudinaryUploads
             'ekraf/products',
             500,
             500,
+            $oldCloudinaryId
+        );
+    }
+
+    /**
+     * Handle thumbnail upload for articles using external service (Android-compatible)
+     */
+    protected function handleThumbnailUpload(array $data, ?string $oldCloudinaryId = null): array
+    {
+        return $this->handleCloudinaryUpload(
+            $data,
+            'thumbnail',
+            'cloudinary_id', 
+            'cloudinary_meta',
+            'ekraf/articles',
+            800,
+            450,
+            $oldCloudinaryId
+        );
+    }
+
+    /**
+     * Handle banner image upload using external service (Android-compatible)
+     */
+    protected function handleBannerImageUpload(array $data, ?string $oldCloudinaryId = null): array
+    {
+        return $this->handleCloudinaryUpload(
+            $data,
+            'image',
+            'cloudinary_id',
+            'cloudinary_meta',
+            'ekraf/banners',
+            1200,
+            400,
+            $oldCloudinaryId
+        );
+    }
+
+    /**
+     * Handle katalog image upload using external service (Android-compatible)
+     */
+    protected function handleKatalogImageUpload(array $data, ?string $oldCloudinaryId = null): array
+    {
+        return $this->handleCloudinaryUpload(
+            $data,
+            'image',
+            'cloudinary_id',
+            'cloudinary_meta',
+            'ekraf/katalogs',
+            800,
+            600,
             $oldCloudinaryId
         );
     }

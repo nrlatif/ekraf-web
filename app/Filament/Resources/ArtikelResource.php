@@ -32,11 +32,30 @@ class ArtikelResource extends Resource
                 ->relationship('artikelkategori', 'title')
                 ->required(),
                 Forms\Components\TextInput::make('title')
-                 ->live(onBlur: true)
-                ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
-                ->required(),
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (Set $set, ?string $state, ?string $old, $record) {
+                        if ($state !== $old) {
+                            $baseSlug = Str::slug($state);
+                            $slug = $baseSlug;
+                            $counter = 1;
+                            
+                            // Ensure unique slug
+                            while (Artikel::where('slug', $slug)
+                                ->when($record, fn($query) => $query->where('id', '!=', $record->id))
+                                ->exists()) {
+                                $slug = $baseSlug . '-' . $counter;
+                                $counter++;
+                            }
+                            
+                            $set('slug', $slug);
+                        }
+                    })
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('slug')
-                ->readOnly(),
+                    ->readOnly()
+                    ->unique(Artikel::class, 'slug', ignoreRecord: true)
+                    ->helperText('Slug akan dibuat otomatis dari title'),
                 
                 Forms\Components\Section::make('Current Thumbnail')
                     ->description('Gambar thumbnail yang saat ini digunakan')
@@ -74,7 +93,8 @@ class ArtikelResource extends Resource
                     ->imageResizeTargetWidth('800')
                     ->imageResizeTargetHeight('450')
                     ->columnSpanFull()
-                    ->helperText('Upload thumbnail untuk artikel. Gambar akan diupload ke Cloudinary. Ukuran ideal: 800x450px. Max: 10MB'),
+                    ->live()
+                    ->helperText('Upload thumbnail untuk artikel. Gambar akan diupload ke external service (Android-compatible) dengan Cloudinary sebagai fallback. Ukuran ideal: 800x450px. Max: 10MB'),
                 Forms\Components\RichEditor::make('content')
                 ->required()
                 ->columnSpanFull(),
