@@ -102,7 +102,7 @@ class CloudinaryService
     public function deleteFile(string $publicId): bool
     {
         try {
-            $result = Cloudinary::destroy($publicId);
+            $result = Cloudinary::uploadApi()->destroy($publicId);
             return $result['result'] === 'ok';
         } catch (\Exception $e) {
             Log::error('Cloudinary delete failed: ' . $e->getMessage(), [
