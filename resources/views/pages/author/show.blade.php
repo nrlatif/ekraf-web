@@ -1,6 +1,7 @@
 @extends('layouts.app')
-@section('title', $author->name)
+@section('title', $author ? $author->name : 'Author')
 @section('content')
+@if($author)
     <!-- Hero Section with Author Info -->
     <div class="relative bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 overflow-hidden">
         <!-- Background Pattern -->
@@ -92,9 +93,11 @@
                                     
                                     <!-- Category Badge -->
                                     <div class="absolute top-4 left-4">
+                                        @if($artikel->artikelKategori)
                                         <span class="bg-orange-500 text-white text-sm font-medium px-3 py-1 rounded-full shadow-lg">
-                                            {{ $artikel->artikelkategori->title }}
+                                            {{ $artikel->artikelKategori->title }}
                                         </span>
+                                        @endif
                                     </div>
                                 </div>
                                 
@@ -142,7 +145,7 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Belum Ada Artikel</h3>
                     <p class="text-gray-600 mb-8 text-lg">{{ $author->name }} belum menulis artikel apapun.</p>
-                    <a href="{{ route('berita') }}" class="inline-flex items-center px-8 py-4 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 transition-colors shadow-lg">
+                    <a href="{{ route('artikel') }}" class="inline-flex items-center px-8 py-4 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 transition-colors shadow-lg">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
                         </svg>
@@ -152,4 +155,12 @@
             @endif
         </div>
     </div>
+@else
+    <div class="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div class="text-center">
+            <h1 class="text-2xl font-bold text-gray-900 mb-4">Author tidak ditemukan</h1>
+            <a href="{{ route('artikel') }}" class="text-orange-500 hover:text-orange-600">Kembali ke Artikel</a>
+        </div>
+    </div>
+@endif
 @endsection
