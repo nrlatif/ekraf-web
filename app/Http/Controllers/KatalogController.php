@@ -12,7 +12,7 @@ class KatalogController extends Controller
     {
         $subsektors = SubSektor::all();
 
-        $katalogs = Katalog::with('subSektor');
+        $katalogs = Katalog::with(['subSektor', 'products'])->withCount('products');
 
         // Filter berdasarkan subsektor
         if ($request->has('subsektor') && $request->subsektor != '') {
@@ -38,7 +38,7 @@ class KatalogController extends Controller
     {
         $subsektors = SubSektor::all();
         $selectedSubsektor = SubSektor::where('slug', $slug)->firstOrFail();
-        $katalogs = Katalog::with('subSektor')
+        $katalogs = Katalog::with(['subSektor', 'products'])->withCount('products')
             ->where('sub_sector_id', $selectedSubsektor->id)
             ->latest()
             ->paginate(6)

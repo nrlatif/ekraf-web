@@ -175,7 +175,7 @@
 
     <!-- Produk Lainnya -->
     <section class="max-w-7xl mx-auto pb-12 px-6">
-        <h2 class="text-center text-orange-500 font-semibold text-md mb-8">Produk Dari Lainnya</h2>
+        <h2 class="text-center text-orange-500 font-semibold text-md mb-8">Katalog Lainnya</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-8">
             @foreach ($others as $kat)
                 <a href="{{ route('katalog.show', $kat->slug) }}">

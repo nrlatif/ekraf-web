@@ -63,15 +63,7 @@ class EditArtikel extends EditRecord
     {
         $oldCloudinaryId = $this->record?->cloudinary_id;
         
-        return $this->handleCloudinaryUpload(
-            $data,
-            'thumbnail',
-            'cloudinary_id',
-            'cloudinary_meta',
-            'articles',
-            800,
-            450,
-            $oldCloudinaryId
-        );
+        // Handle thumbnail upload using external service (Android-compatible)
+        return $this->handleThumbnailUpload($data, $oldCloudinaryId);
     }
 }

@@ -59,7 +59,13 @@ class Artikel extends Model
      */
     public function getThumbnailUrlAttribute(): string
     {
-        // If we have a Cloudinary ID, use it
+        // 1. PRIORITY: Direct URL from external service (Android-compatible)
+        // If thumbnail field contains full URL (from external service or Next.js backend), use it directly
+        if (!empty($this->thumbnail) && (str_starts_with($this->thumbnail, 'http://') || str_starts_with($this->thumbnail, 'https://'))) {
+            return $this->thumbnail;
+        }
+
+        // 2. FALLBACK: If we have a Cloudinary ID (old Laravel admin upload), use it
         if (!empty($this->cloudinary_id)) {
             $cloudinaryService = app(CloudinaryService::class);
             $cloudinaryUrl = $cloudinaryService->getThumbnailUrl($this->cloudinary_id, 800, 450);
@@ -69,12 +75,12 @@ class Artikel extends Model
             }
         }
 
-        // Fallback to local storage if thumbnail exists
+        // 3. FALLBACK: Local storage if thumbnail exists (legacy)
         if (!empty($this->thumbnail) && file_exists(public_path('storage/' . $this->thumbnail))) {
             return asset('storage/' . $this->thumbnail);
         }
 
-        // Final fallback to placeholder
+        // 4. Final fallback to placeholder
         return asset('assets/img/placeholder-article.svg');
     }
 
@@ -93,5 +99,26 @@ class Artikel extends Model
         }
 
         return $this->thumbnail_url;
+    }
+
+    /**
+     * Get the source type of the current image for debugging
+     */
+    public function getImageSource(): string
+    {
+        // Check in priority order
+        if (!empty($this->featured_image_url) && filter_var($this->featured_image_url, FILTER_VALIDATE_URL)) {
+            return 'Next.js URL';
+        }
+        
+        if (!empty($this->cloudinary_id)) {
+            return 'Cloudinary';
+        }
+        
+        if (!empty($this->featured_image) && file_exists(public_path('storage/' . $this->featured_image))) {
+            return 'Local Storage';
+        }
+        
+        return 'Default Fallback';
     }
 }

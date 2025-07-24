@@ -62,11 +62,17 @@ class Product extends Model
     }
 
     /**
-     * Get image URL with fallback
+     * Get image URL with smart detection and fallback
      */
     public function getImageUrlAttribute(): string
     {
-        // If we have a Cloudinary ID, use it
+        // 1. PRIORITY: Direct URL from external service (Android-compatible)
+        // If image field contains full URL (from external service or Next.js backend), use it directly
+        if (!empty($this->image) && (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://'))) {
+            return $this->image;
+        }
+
+        // 2. FALLBACK: If we have a Cloudinary ID (old Laravel admin upload), use it
         if (!empty($this->cloudinary_id)) {
             $cloudinaryService = app(CloudinaryService::class);
             $cloudinaryUrl = $cloudinaryService->getThumbnailUrl($this->cloudinary_id, 500, 500);
@@ -76,12 +82,12 @@ class Product extends Model
             }
         }
 
-        // Fallback to local storage if image exists
+        // 3. FALLBACK: Local storage if image exists (legacy)
         if (!empty($this->image) && file_exists(public_path('storage/' . $this->image))) {
             return asset('storage/' . $this->image);
         }
 
-        // Final fallback to placeholder
+        // 4. Final fallback to placeholder
         return asset('assets/img/placeholder-product.svg');
     }
 
@@ -100,5 +106,26 @@ class Product extends Model
         }
 
         return $this->image_url;
+    }
+
+    /**
+     * Get the source type of the current image for debugging
+     */
+    public function getImageSource(): string
+    {
+        // Check in priority order
+        if (!empty($this->image_url) && filter_var($this->image_url, FILTER_VALIDATE_URL)) {
+            return 'Next.js URL';
+        }
+        
+        if (!empty($this->cloudinary_id)) {
+            return 'Cloudinary';
+        }
+        
+        if (!empty($this->image) && file_exists(public_path('storage/' . $this->image))) {
+            return 'Local Storage';
+        }
+        
+        return 'Default Fallback';
     }
 }

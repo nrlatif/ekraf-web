@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bcafa00283f5b48331f30abb3520e1e9",
+    "content-hash": "35316f35e39e73a0b2b37a5d6788c7e2",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7767,6 +7767,71 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "yoelpc4/laravel-cloudinary",
+            "version": "v6.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yoelpc4/laravel-cloudinary.git",
+                "reference": "22bc7f2ad649f9385eece944c41ecbf620daeda2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yoelpc4/laravel-cloudinary/zipball/22bc7f2ad649f9385eece944c41ecbf620daeda2",
+                "reference": "22bc7f2ad649f9385eece944c41ecbf620daeda2",
+                "shasum": ""
+            },
+            "require": {
+                "cloudinary/cloudinary_php": "^3.1.0",
+                "illuminate/contracts": "^11.0|^12.0",
+                "illuminate/filesystem": "^11.0|^12.0",
+                "illuminate/http": "^11.0|^12.0",
+                "illuminate/support": "^11.0|^12.0",
+                "league/flysystem": "^3.29.1",
+                "php": ">=8.2"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^9.0|^10.0",
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Yoelpc4\\LaravelCloudinary\\CloudinaryServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Yoelpc4\\LaravelCloudinary\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yoel Peter Chandra",
+                    "email": "yoelpc4@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel Cloudinary filesystem cloud driver.",
+            "homepage": "https://github.com/yoelpc4/laravel-cloudinary",
+            "keywords": [
+                "cloud",
+                "cloudinary",
+                "filesystem",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/yoelpc4/laravel-cloudinary/issues",
+                "source": "https://github.com/yoelpc4/laravel-cloudinary/tree/v6.0.0"
+            },
+            "time": "2025-04-14T18:53:16+00:00"
         }
     ],
     "packages-dev": [

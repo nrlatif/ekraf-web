@@ -33,15 +33,6 @@ class EditProduct extends EditRecord
     {
         $oldCloudinaryId = $this->record?->cloudinary_id;
         
-        return $this->handleCloudinaryUpload(
-            $data,
-            'image',
-            'cloudinary_id',
-            'cloudinary_meta',
-            'products',
-            500,
-            500,
-            $oldCloudinaryId
-        );
+        return $this->handleProductImageUpload($data, $oldCloudinaryId);
     }
 }
